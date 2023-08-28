@@ -6,4 +6,5 @@ public class Article
     public int BlogId { get; set; }
     public string Title { get; set; }
     public List<Comment> Comments { get; set; }
+    public DateTime DatePosted { get; set; }   
 }

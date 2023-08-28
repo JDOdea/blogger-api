@@ -98,61 +98,71 @@ List<Article> articles = new List<Article>()
     {
         Id = 1,
         BlogId = 2,
-        Title = "Unlocking the Secrets: The Science Behind Productivity"
+        Title = "Unlocking the Secrets: The Science Behind Productivity",
+        DatePosted = new DateTime(2023, 08, 01)
     },
     new Article()
     {
         Id = 2,
         BlogId = 4,
-        Title = "Mastering Your Mornings: How to Create a Successful Routine"
+        Title = "Mastering Your Mornings: How to Create a Successful Routine",
+        DatePosted = new DateTime(2023, 08, 03)
     },
     new Article()
     {
         Id = 3,
         BlogId = 3,
-        Title = "The Art of Effective Communication: Boost Your Relationships"
+        Title = "The Art of Effective Communication: Boost Your Relationships",
+        DatePosted = new DateTime(2023, 08, 03)
     },
     new Article()
     {
         Id = 4,
         BlogId = 4,
-        Title = "Mindful Living: Discover the Power of Being Present"
+        Title = "Mindful Living: Discover the Power of Being Present",
+        DatePosted = new DateTime(2023, 08, 06)
     },
     new Article()
     {
         Id = 5,
         BlogId = 1,
-        Title = "Financial Freedom Demystified: Steps to Secure Your Future"
+        Title = "Financial Freedom Demystified: Steps to Secure Your Future",
+        DatePosted = new DateTime(2023, 08, 10)
     },
     new Article()
     {
         Id = 6,
         BlogId = 2,
-        Title = "From Dreams to Reality: A Practical Guide to Setting Goals"
+        Title = "From Dreams to Reality: A Practical Guide to Setting Goals",
+        DatePosted = new DateTime(2023, 08, 14)
     },
     new Article()
     {
         Id = 7,
         BlogId = 1,
-        Title = "The Healthy Plate: Exploring Nutrient-Rich Superfoods"
+        Title = "The Healthy Plate: Exploring Nutrient-Rich Superfoods",
+        DatePosted = new DateTime(2023, 08, 19)
     },
     new Article()
     {
         Id = 8,
         BlogId = 4,
-        Title = "Exploring the Wonders of Nature: Outdoor Adventures Await"
+        Title = "Exploring the Wonders of Nature: Outdoor Adventures Await",
+        DatePosted = new DateTime(2023, 08, 24)
     },
     new Article()
     {
         Id = 9,
         BlogId = 3,
-        Title = "Unleash Your Creativity: Strategies for a More Inspired Life"
+        Title = "Unleash Your Creativity: Strategies for a More Inspired Life",
+        DatePosted = new DateTime(2023, 08, 25)
     },
     new Article()
     {
         Id = 10,
         BlogId = 2,
-        Title = "The Power of Positivity: Transforming Challenges into Triumphs"
+        Title = "The Power of Positivity: Transforming Challenges into Triumphs",
+        DatePosted = new DateTime(2023, 08, 28)
     }
 };
 
@@ -388,6 +398,20 @@ app.MapGet("/blogs/{blogId}/articles", (int blogId) =>
     return Results.Ok(blogArticles);
 });
 
+//  Get recently posted articles
+app.MapGet("/articles/recent", () => 
+{
+    //  Create DateTime for past week
+    DateTime oneWeekAgo = DateTime.Now - TimeSpan.FromDays(7);
+    List<Article> recentArticles = articles.Where(a => a.DatePosted > oneWeekAgo).ToList();
+    if (recentArticles == null)
+    {
+        return Results.NotFound();
+    }
+
+    return Results.Ok(recentArticles);
+});
+
 //  Update an Article
 app.MapPut("/articles/{id}", (int id, Article article) =>
 {
@@ -545,8 +569,8 @@ app.MapGet("/authors", () =>
 app.Run();
 /* 
 Get all Comments on Articles on a Blog (challenge)
-
-
 Retrieve recently posted articles (challenge)
+
+
 Add an Author to a Blog (challenge)
  */
