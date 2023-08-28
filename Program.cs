@@ -313,7 +313,7 @@ app.UseHttpsRedirection();
 
 #region Endpoints
 
-#region Endpoints--Blogs
+#region Endpoint--Blogs
 //  Get all Blogs
 app.MapGet("/blogs", () =>
 {
@@ -366,7 +366,7 @@ app.MapPost("/blogs", (Blog blog) =>
 });
 #endregion
 
-#region Endpoints--Articles
+#region Endpoint--Articles
 //  Get all Articles
 app.MapGet("/articles", () => 
 {
@@ -468,7 +468,7 @@ app.MapDelete("/blogs/{blogId}/articles", (int blogId) =>
 });
 #endregion
 
-#region Endpoints--Comments
+#region Endpoint--Comments
 //  Get all Comments
 app.MapGet("/comments", () =>
 {
@@ -554,23 +554,54 @@ app.MapDelete("/comments/{id}", (int id) =>
 });
 #endregion
 
-#region Endpoints--Authors
+#region Endpoint--Authors
 //  Get all Authors
 app.MapGet("/authors", () => 
 {
     return authors;
 });
 
+//  Add Author to a Blog
+app.MapPost("blogs/{blogId}/authors", (int blogId, Author author) =>
+{
+    //  Get list of current BlogAuthors
+    List<BlogAuthor> currentBlogAuthors = blogAuthors.Where(ba => ba.BlogId == blogId).ToList();
+    if (currentBlogAuthors == null)
+    {
+        return Results.NotFound();
+    }
 
+    //  If author is already included, return BadRequest
+    foreach (BlogAuthor blogAuthor in currentBlogAuthors) 
+    {
+        if (blogAuthor.AuthorId == author.Id)
+        {
+            return Results.BadRequest();
+        }
+    }
+
+    //  Create BlogAuthor and add to list
+    BlogAuthor blogAuthorToAdd = new BlogAuthor()
+    {
+        Id = blogAuthors.Count > 0 ? blogAuthors.Max(ba => ba.Id) + 1 : 1,
+        BlogId = blogId,
+        AuthorId = author.Id
+    };
+    blogAuthors.Add(blogAuthorToAdd);
+
+    return Results.Ok(blogAuthorToAdd);
+});
+
+#endregion
+
+#region Endpoint--BlogAuthors
+//  Get all BlogAuthors
+app.MapGet("/blogauthors", () =>
+{
+    return blogAuthors;
+});
 #endregion
 
 #endregion
 
 app.Run();
-/* 
-Get all Comments on Articles on a Blog (challenge)
-Retrieve recently posted articles (challenge)
-
-
-Add an Author to a Blog (challenge)
- */
